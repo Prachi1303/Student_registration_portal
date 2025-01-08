@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><a href="/dashboard">Profile</a></li>
+            <li><a href="/update-profile">Update Profile</a></li>
+            <li><a href="/semester-registration">Semester Registration</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="dashboard-container">
+    <!-- Welcome Message -->
+    <h2 class="welcome-message">Welcome to Dashboard</h2>
+
+    <div class="profile-info">
+        <!-- Profile Picture -->
+        <img src="/uploads/{{userDetails.profile_picture}}" alt="Profile Picture" class="profile-pic">
+        
+        <!-- User Information -->
+        <p>Name: {{userDetails.name}}</p>
+        <p>Email: {{userDetails.email}}</p>
+        <p>Branch: {{userDetails.branch}}</p>
+        <p>Year: {{userDetails.year}}</p>
+        <p>Enrollment: {{userDetails.enrollment}}</p>
+        <p>Mobile: {{userDetails.mobile}}</p>
+        <p>Date of Birth: {{userDetails.dob}}</p>
+        <p>Address: {{userDetails.address}}</p>
+    </div>
+</div>
+
+</body>
+</html>
