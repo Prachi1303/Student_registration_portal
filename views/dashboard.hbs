@@ -11,7 +11,13 @@
         <ul>
             <li><a href="/dashboard">Profile</a></li>
             <li><a href="/update-profile">Update Profile</a></li>
-            <li><a href="/semester-registration">Semester Registration</a></li>
+            {{#if (eq registrationStatus "Not Requested")}}
+    <button onclick=submitSemesterRegistration()>Register for Semester</button>
+{{else}}
+    <p>Status: {{registrationStatus}}</p>
+{{/if}}
+
+
             <li><a href="/logout">Logout</a></li>
         </ul>
     </div>
@@ -20,20 +26,43 @@
     <h2 class="welcome-message">Welcome to Dashboard</h2>
 
     <div class="profile-info">
-        <!-- Profile Picture -->
-        <img src="/uploads/{{userDetails.profile_picture}}" alt="Profile Picture" class="profile-pic">
-        
-        <!-- User Information -->
-        <p>Name: {{userDetails.name}}</p>
-        <p>Email: {{userDetails.email}}</p>
-        <p>Branch: {{userDetails.branch}}</p>
-        <p>Year: {{userDetails.year}}</p>
-        <p>Enrollment: {{userDetails.enrollment}}</p>
-        <p>Mobile: {{userDetails.mobile}}</p>
-        <p>Date of Birth: {{userDetails.dob}}</p>
-        <p>Address: {{userDetails.address}}</p>
+    <img src="/uploads/{{userDetails.profile_picture}}" alt="Profile Picture" class="profile-pic">
+    <p>Name: {{userDetails.name}}</p>
+    <p>Email: {{userDetails.email}}</p>
+    <p>Branch: {{userDetails.branch}}</p>
+    <p>Year: {{userDetails.year}}</p>
+    <p>Enrollment: {{userDetails.enrollment}}</p>
+    <p>Mobile: {{userDetails.mobile}}</p>
+    <p>Date of Birth: {{userDetails.dob}}</p>
+    <p>Address: {{userDetails.address}}</p>
+</div>
+
+<!-- Display the registration request status -->
+<div class="registration-status">
+    <h3>Semester Registration Status:</h3>
+    <p>{{registrationStatus}}</p>
+</div>
+
     </div>
 </div>
 
 </body>
+<script>
+function submitSemesterRegistration() {
+    fetch('/semester-registration', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                alert('Semester registration request submitted successfully');
+            } else {
+                response.text().then((text) => alert(`Error: ${text}`));
+            }
+        })
+        .catch((error) => console.error('Error submitting semester registration request:', error));
+}
+</script>
 </html>

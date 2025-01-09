@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <header>
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div class="notification-bell" onclick="fetchNotifications()">
+                <span>&#128276;</span> <!-- Notification Bell Icon -->
+                <span id="notification-count" class="notification-count"></span> <!-- Notification Count -->
+            </div>
+            <div class="logout">
+                <a href="/admin-logout">Logout</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <h2>Registered Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Branch</th>
+                    <th>Year</th>
+                    <th>Enrollment</th>
+                    <th>Mobile</th>
+                    <th>Date of Birth</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{name}}</td>
+                    <td>{{email}}</td>
+                    <td>{{branch}}</td>
+                    <td>{{year}}</td>
+                    <td>{{enrollment}}</td>
+                    <td>{{mobile}}</td>
+                    <td>{{dob}}</td>
+                    <td>{{address}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Notifications Popup -->
+    <div id="notifications-popup" class="popup hidden">
+        <h2>Semester Registration Requests</h2>
+        <div id="requests-container"></div>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        // Function to fetch the number of pending notifications
+        function fetchNotificationCount() {
+            fetch('/admin/notification-count')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationCount = document.getElementById('notification-count');
+                    notificationCount.innerText = data.count || ''; // Display the count or empty if 0
+                })
+                .catch(error => console.error('Error fetching notification count:', error));
+        }
+
+        // Function to fetch and display notifications
+        function fetchNotifications() {
+            fetch('/admin/notifications')
+                .then((response) => response.json())
+                .then((data) => {
+                    const container = document.getElementById('requests-container');
+                    container.innerHTML = ''; // Clear old requests
+
+                    data.forEach((request) => {
+                        const requestElement = document.createElement('div');
+                        requestElement.classList.add('request');
+
+                        requestElement.innerHTML = `
+                            <p><strong>Name:</strong> ${request.name}</p>
+                            <p><strong>Email:</strong> ${request.email}</p>
+                            <button onclick="handleRequest(${request.id}, 'approved')">Accept</button>
+                            <button onclick="handleRequest(${request.id}, 'denied')">Deny</button>
+                        `;
+
+                        container.appendChild(requestElement);
+                    });
+
+                    document.getElementById('notifications-popup').classList.remove('hidden');
+                })
+                .catch((error) => console.error('Error fetching notifications:', error));
+        }
+
+        // Function to handle accept or deny actions
+        function handleRequest(requestId, action) {
+            fetch('/admin/handle-request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ requestId, action }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        fetchNotifications(); // Refresh notifications
+                        fetchNotificationCount(); // Update notification count
+                    }
+                })
+                .catch((error) => console.error('Error handling request:', error));
+        }
+
+        // Close the notifications popup
+        function closePopup() {
+            document.getElementById('notifications-popup').classList.add('hidden');
+        }
+
+        // Fetch notification count on page load
+        window.onload = function() {
+            fetchNotificationCount();
+        };
+    </script>
+</body>
+</html>

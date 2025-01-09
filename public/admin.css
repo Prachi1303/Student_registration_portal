@@ -1,0 +1,194 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header styling */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+
+.admin-header h1 {
+    margin: 0;
+}
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.notification-bell:hover {
+    color: #f0a500;
+}
+
+.logout a {
+    color: #fff;
+    text-decoration: none;
+    background-color: #f44336;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.logout a:hover {
+    background-color: #d32f2f;
+}
+
+/* Main table styling */
+main {
+    padding: 2rem;
+}
+
+main h2 {
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #333;
+    color: #fff;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    font-size: 0.9rem;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Notification Popup styling */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 2rem;
+    z-index: 1000;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup h2 {
+    margin-top: 0;
+}
+
+.request {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.request p {
+    margin: 0.5rem 0;
+}
+
+.request button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.request button:first-of-type {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.request button:first-of-type:hover {
+    background-color: #45a049;
+}
+
+.request button:last-of-type {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.request button:last-of-type:hover {
+    background-color: #d32f2f;
+}
+
+/* Close button for popup */
+.popup button {
+    display: block;
+    margin: 1rem auto 0;
+    background-color: #333;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.popup button:hover {
+    background-color: #555;
+}
+
+/* Overlay for popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .popup {
+        width: 80%;
+    }
+
+    table {
+        font-size: 0.85rem;
+    }
+
+    .admin-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .notification-bell {
+        font-size: 1.25rem;
+    }
+}

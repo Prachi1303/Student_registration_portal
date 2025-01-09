@@ -34,6 +34,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set up Handlebars
 app.set('view engine', 'hbs');
 
+const hbs = require('hbs');
+
+// Register the 'eq' helper
+hbs.registerHelper('eq', function(a, b) {
+    return a === b ? true : false;  // Return true or false based on comparison
+});
+
+
+
 // Set up sessions
 app.use(
     session({
@@ -62,6 +71,37 @@ const isAuthenticated = (req, res, next) => {
     }
     next();
 };
+
+const nodemailer = require('nodemailer');
+
+// Create reusable transporter object using the default SMTP transport
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'ayash0876@gmail.com', // Your email
+        pass: 'Yash@1329'   // Your email password or App-specific password
+    }
+});
+
+// Function to send email
+const sendEmail = (to, subject, text) => {
+    const mailOptions = {
+        from: 'ayash0876@gmail.com', // Your email address
+        to: to,
+        subject: subject,
+        text: text,
+    };
+
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.log('Error sending email:', err);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+};
+
+
 
 // Routes
 app.get('/', (req, res) => {
@@ -140,18 +180,32 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
     // Get user details from the database
     db.query('SELECT * FROM user_details WHERE user_id = ?', [userId], (err, results) => {
         if (err) {
-            console.error('Database error fetching user details:', err);
+            console.error(err);
             return res.status(500).send('Database error');
         }
 
         const userDetails = results[0] || {};
-        res.render('dashboard', {
-            email: req.session.user.email,
-            userDetails: userDetails,
-            message: 'Welcome to your dashboard!',
+
+        // Get semester registration request status
+        db.query('SELECT status FROM semester_registration_requests WHERE user_id = ? ORDER BY created_at DESC LIMIT 1', [userId], (err, results) => {
+            if (err) {
+                console.error('Error fetching semester registration status:', err);
+                return res.status(500).send('Database error');
+            }
+
+            // Get the most recent registration request status
+            const registrationStatus = results.length > 0 ? results[0].status : 'Not Requested';
+
+            res.render('dashboard', {
+                email: req.session.user.email,
+                userDetails: userDetails,
+                registrationStatus: registrationStatus, // Pass status to template
+                message: 'Welcome to your dashboard!',
+            });
         });
     });
 });
+
 
 // Render the update profile page (protected)
 app.get('/update-profile', isAuthenticated, (req, res) => {
@@ -228,6 +282,166 @@ app.get('/logout', (req, res) => {
         res.redirect('/login');
     });
 });
+
+
+// admin queries
+
+const isAdminAuthenticated = (req, res, next) => {
+    if (!req.session.admin) {
+        return res.redirect('/admin-login');
+    }
+    next();
+};
+
+// Admin Login Page
+app.get('/admin-login', (req, res) => {
+    res.render('admin-login');
+});
+
+// Admin Login Route
+app.post('/admin-login', (req, res) => {
+    const { email, password } = req.body;
+
+    if (email === 'admin@gmail.com' && password === 'admin') {
+        req.session.admin = { email };
+        res.redirect('/admin');
+    } else {
+        res.render('admin-login', { error: 'Invalid Admin Credentials' });
+    }
+});
+
+// Admin Dashboard
+app.get('/admin', isAdminAuthenticated, (req, res) => {
+    db.query('SELECT * FROM user_details', (err, results) => {
+        if (err) {
+            console.error('Error fetching user details:', err);
+            return res.status(500).send('Database error');
+        }
+
+        res.render('admin', {
+            adminEmail: req.session.admin.email,
+            users: results,
+        });
+    });
+});
+
+// Admin Logout Route
+app.get('/admin-logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Logout error:', err);
+            return res.status(500).send('Logout error');
+        }
+        res.redirect('/admin-login');
+    });
+});
+
+
+app.post('/semester-registration', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+
+    // Get user details
+    db.query('SELECT * FROM user_details WHERE user_id = ?', [userId], (err, results) => {
+        if (err) {
+            console.error('Database error fetching user details:', err);
+            return res.status(500).send('Database error');
+        }
+
+        if (results.length === 0) {
+            return res.status(400).send('User details not found.');
+        }
+
+        const { name, email } = results[0];
+
+        // Insert request into the database
+        const query = `
+            INSERT INTO semester_registration_requests (user_id, name, email, status)
+            VALUES (?, ?, ?, 'pending')
+        `;
+        db.query(query, [userId, name, email], (err) => {
+            if (err) {
+                console.error('Database error inserting registration request:', err);
+                return res.status(500).send('Database error');
+            }
+
+            res.redirect('/dashboard');
+        });
+    });
+});
+
+app.get('/admin/notifications', (req, res) => {
+    // Only allow admin access
+    if (!req.session.admin) {
+        return res.redirect('/admin-login');
+    }
+
+    // Fetch all pending requests
+    const query = 'SELECT * FROM semester_registration_requests WHERE status = "pending"';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Database error fetching notifications:', err);
+            return res.status(500).send('Database error');
+        }
+
+        res.json(results);
+    });
+});
+
+app.post('/admin/handle-request', (req, res) => {
+    const { requestId, action } = req.body;
+
+    // Check if the action is valid
+    if (action !== 'approved' && action !== 'denied') {
+        return res.status(400).send('Invalid action');
+    }
+
+    // Get the request details from the database
+    db.query('SELECT * FROM semester_registration_requests WHERE id = ?', [requestId], (err, results) => {
+        if (err) {
+            console.error('Error fetching registration request:', err);
+            return res.status(500).send('Database error');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Request not found');
+        }
+
+        const request = results[0];
+        const { user_id, name, email } = request;
+
+        // Update the request status
+        const newStatus = action === 'approved' ? 'Approved' : 'Denied';
+        db.query('UPDATE semester_registration_requests SET status = ? WHERE id = ?', [newStatus, requestId], (err) => {
+            if (err) {
+                console.error('Error updating request status:', err);
+                return res.status(500).send('Error updating request status');
+            }
+
+            // Send email to the user notifying them of the decision
+            const subject = `Your Semester Registration Request ${newStatus}`;
+            const text = `Hello ${name},\n\nYour semester registration request has been ${newStatus}.`;
+
+            sendEmail(email, subject, text);
+
+            // Send response to the admin
+            res.send('Request handled and email sent');
+        });
+    });
+});
+
+// Route to fetch the number of pending notifications for the admin
+app.get('/admin/notification-count', (req, res) => {
+    db.query('SELECT COUNT(*) AS count FROM semester_registration_requests WHERE status = "pending"', (err, results) => {
+        if (err) {
+            console.error('Error fetching notification count:', err);
+            return res.status(500).send('Database error');
+        }
+
+        const count = results[0].count;
+        res.json({ count }); // Send back the count as a JSON response
+    });
+});
+
 
 // Start server
 app.listen(3000, () => {
