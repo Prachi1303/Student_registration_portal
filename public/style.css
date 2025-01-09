@@ -5,7 +5,11 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background: #f4f4f4;
+    background-image: url('./images/background2.jpg');
+    background-size: cover; /* Makes the image cover the entire background */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; 
+
 }
 
 .container {
@@ -13,12 +17,14 @@ body {
     max-width: 400px;
     background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
     text-align: center;
+    font-size: 2rem;
+    color: #4a4eea;
 }
 
 form {
@@ -36,16 +42,25 @@ form input {
 
 form button {
     padding: 10px;
-    background-color: #5cb85c;
-    color: white;
+    background: linear-gradient(135deg, #4a4eea, #6a67fc);
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 form button:hover {
-    background-color: #4cae4c;
+    background: linear-gradient(135deg, #6a67fc, #4a4eea);
 }
+
+p{
+    margin: 10px 0;
+    font-size: 0.9rem;
+    color: #4a4eea;
+    text-decoration: none; 
+}
+
+
 
 .error {
     color: red;

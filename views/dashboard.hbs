@@ -4,47 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/dashboard.css">
 </head>
 <body>
     <div class="sidebar">
         <ul>
-            <li><a href="/dashboard">Profile</a></li>
-            <li><a href="/update-profile">Update Profile</a></li>
+            <li><a href="/dashboard"><i class='bx bx-user'></i>Profile</a></li>
+            <li><a href="/update-profile"><i class='bx bx-edit'></i>Update Profile</a></li>
             {{#if (eq registrationStatus "Not Requested")}}
-    <button onclick=submitSemesterRegistration()>Register for Semester</button>
-{{else}}
-    <p>Status: {{registrationStatus}}</p>
-{{/if}}
-
-
-            <li><a href="/logout">Logout</a></li>
+            <button onclick="submitSemesterRegistration()">Register for Semester</button>
+            {{else}}
+            <p>Status: {{registrationStatus}}</p>
+            {{/if}}
+            <li><a href="/logout"><i class='bx bxs-log-out-circle'></i>Logout</a></li>
         </ul>
     </div>
     <div class="dashboard-container">
-    <!-- Welcome Message -->
-    <h2 class="welcome-message">Welcome to Dashboard</h2>
+        <!-- Welcome Message -->
+        <h2 class="welcome-message">Welcome to Dashboard</h2>
 
-    <div class="profile-info">
-    <img src="/uploads/{{userDetails.profile_picture}}" alt="Profile Picture" class="profile-pic">
-    <p>Name: {{userDetails.name}}</p>
-    <p>Email: {{userDetails.email}}</p>
-    <p>Branch: {{userDetails.branch}}</p>
-    <p>Year: {{userDetails.year}}</p>
-    <p>Enrollment: {{userDetails.enrollment}}</p>
-    <p>Mobile: {{userDetails.mobile}}</p>
-    <p>Date of Birth: {{userDetails.dob}}</p>
-    <p>Address: {{userDetails.address}}</p>
-</div>
+        <!-- Profile Info -->
+        <div class="profile-info">
+            <img src="/uploads/{{userDetails.profile_picture}}" alt="Profile Picture" class="profile-pic">
+            <p><span>Name:</span> {{userDetails.name}}</p>
+            <p><span>Email:</span> {{userDetails.email}}</p>
+            <p><span>Branch:</span> {{userDetails.branch}}</p>
+            <p><span>Year:</span> {{userDetails.year}}</p>
+            <p><span>Enrollment:</span> {{userDetails.enrollment}}</p>
+            <p><span>Mobile:</span> {{userDetails.mobile}}</p>
+            <p><span>Date of Birth:</span> {{userDetails.dob}}</p>
+            <p><span>Address:</span> {{userDetails.address}}</p>
+        </div>
 
-<!-- Display the registration request status -->
-<div class="registration-status">
-    <h3>Semester Registration Status:</h3>
-    <p>{{registrationStatus}}</p>
-</div>
-
+        <!-- Registration Status -->
+        <div class="registration-status">
+            <h3>Semester Registration Status:</h3>
+            <p>{{registrationStatus}}</p>
+        </div>
     </div>
-</div>
 
 </body>
 <script>

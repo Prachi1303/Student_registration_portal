@@ -4,52 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Profile</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/update.css">
 </head>
 <body>
     <div class="sidebar">
         <ul>
-            <li><a href="/dashboard">Profile</a></li>
-            <li><a href="/update-profile">Update Profile</a></li>
-            <li><a href="/semester-registration">Semester Registration</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/dashboard"><i class='bx bx-user'></i>Profile</a></li>
+            <li><a href="/update-profile"><i class='bx bx-edit'></i>Update Profile</a></li>
+            <li><a href="/semester-registration"><i class='bx bx-book'></i>Semester Registration</a></li>
+            <li><a href="/logout"><i class='bx bxs-log-out-circle'></i>Logout</a></li>
         </ul>
     </div>
-    <div class="content">
-        <h1>Update Your Profile</h1>
-        <form action="/update" method="POST" enctype="multipart/form-data">
-            <label for="name">Name:</label>
-            <input type="text" name="name" value="{{userDetails.name}}" required>
+    <div class="dashboard-container">
+        <h1 class="welcome-message">Update Your Profile</h1>
+        <div class="update-profile-container">
+            <form action="/update" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" value="{{userDetails.name}}" required>
+                </div>
 
-            
+                <div class="form-group">
+                    <label for="branch">Branch:</label>
+                    <input type="text" name="branch" value="{{userDetails.branch}}" required>
+                </div>
 
-            <label for="branch">Branch:</label>
-            <input type="text" name="branch" value="{{userDetails.branch}}" required>
+                <div class="form-group">
+                    <label for="year">Year:</label>
+                    <input type="text" name="year" value="{{userDetails.year}}" required>
+                </div>
 
-            <label for="year">Year:</label>
-            <input type="text" name="year" value="{{userDetails.year}}" required>
+                <div class="form-group">
+                    <label for="enrollment">Enrollment Number:</label>
+                    <input type="text" name="enrollment" value="{{userDetails.enrollment}}" required>
+                </div>
 
-            <label for="enrollment">Enrollment Number:</label>
-            <input type="text" name="enrollment" value="{{userDetails.enrollment}}" required>
+                <div class="form-group">
+                    <label for="mobile">Mobile:</label>
+                    <input type="text" name="mobile" value="{{userDetails.mobile}}" required>
+                </div>
 
-            <label for="mobile">Mobile:</label>
-            <input type="text" name="mobile" value="{{userDetails.mobile}}" required>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" value="{{userDetails.email}}" required>
+                </div>
 
-            <label for="email">Email:</label>
-            <input type="email" name="email" value="{{userDetails.email}}" required>
+                <div class="form-group">
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" name="dob" value="{{userDetails.dob}}" required>
+                </div>
 
-            
-            <label for="dob">Date of Birth:</label>
-            <input type="date" name="dob" value="{{userDetails.dob}}" required>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea name="address" rows="4" required>{{userDetails.address}}</textarea>
+                </div>
 
-            <label for="address">Address:</label>
-            <textarea name="address" required>{{userDetails.address}}</textarea>
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture:</label>
+                    <input type="file" name="profile_picture">
+                </div>
 
-            <label for="profile_picture">Profile Picture:</label>
-            <input type="file" name="profile_picture">
-
-            <button type="submit">Update Profile</button>
-        </form>
+                <button type="submit" class="update-button">Update Profile</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

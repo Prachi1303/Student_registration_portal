@@ -1,3 +1,4 @@
+/* General Dashboard Styling */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -48,21 +49,7 @@ body {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.sidebar ul li button {
-    background: #f39c12;
-    border: none;
-    color: white;
-    font-size: 16px;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.sidebar ul li button:hover {
-    background: #e67e22;
-}
-
+/* Update Profile Section */
 .dashboard-container {
     flex: 1;
     padding: 20px;
@@ -75,54 +62,60 @@ body {
     text-align: center;
 }
 
-.profile-info {
+.update-profile-container {
     background: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     margin: 20px auto;
-    /* text-align: center; */
 }
 
-.profile-info img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
     margin-bottom: 15px;
-    border: 3px solid #4b70b2;
 }
 
-.profile-info p {
-    margin: 10px 0;
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
-}
-
-.profile-info p span {
+label {
     font-weight: bold;
-    color: #4b70b2;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
 }
 
-.registration-status {
-    background: #f8f9fa;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    max-width: 600px;
-    margin: 20px auto;
-    text-align: center;
-}
-
-.registration-status h3 {
-    font-size: 20px;
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
-
-.registration-status p {
+input[type="text"],
+input[type="email"],
+input[type="date"],
+textarea,
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dfe6e9;
+    border-radius: 5px;
+    box-sizing: border-box;
     font-size: 16px;
-    color: #4b70b2;
-    font-weight: 500;
+}
+
+textarea {
+    resize: none;
+}
+
+.update-button {
+    background: #4b70b2;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.update-button:hover {
+    background: #365e9d;
 }
