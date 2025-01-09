@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/admin.css">
+    
 </head>
+
 <body>
     <header>
         <div class="admin-header">
@@ -20,48 +24,77 @@
         </div>
     </header>
     <main>
+
+        <div class="search-bar">
+        <input
+            type="text"
+            id="enrollment-search"
+            placeholder="Enter enrollment number to search"
+        />
+        <button onclick="searchEnrollment()">Search</button>
+    </div>
+<p id="search-message" ></p>
         <h2>Registered Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Branch</th>
-                    <th>Year</th>
-                    <th>Enrollment</th>
-                    <th>Mobile</th>
-                    <th>Date of Birth</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each users}}
-                <tr>
-                    <td>{{id}}</td>
-                    <td>{{name}}</td>
-                    <td>{{email}}</td>
-                    <td>{{branch}}</td>
-                    <td>{{year}}</td>
-                    <td>{{enrollment}}</td>
-                    <td>{{mobile}}</td>
-                    <td>{{dob}}</td>
-                    <td>{{address}}</td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <table>
+        <thead>
+            <tr>
+                
+                <th>Name</th>
+                <th>Email</th>
+                <th>Branch</th>
+                <th>Year</th>
+                <th>Enrollment</th>
+                <th>Mobile</th>
+                <th>Date of Birth</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody id="user-table">
+            {{#each users}}
+            <tr>
+                
+                <td>{{name}}</td>
+                <td>{{email}}</td>
+                <td>{{branch}}</td>
+                <td>{{year}}</td>
+                <td>{{enrollment}}</td>
+                <td>{{mobile}}</td>
+                <td class="dob">{{dob}}</td>
+                <td>{{address}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
     </main>
 
-    <!-- Notifications Popup -->
+   <!-- Notifications Popup -->
     <div id="notifications-popup" class="popup hidden">
         <h2>Semester Registration Requests</h2>
         <div id="requests-container"></div>
         <button onclick="closePopup()">Close</button>
-    </div>
+    </div> 
+
+    
+
 
     <script>
         // Function to fetch the number of pending notifications
+         function formatDate(rawDate) {
+            const date = new Date(rawDate);
+            if (isNaN(date.getTime())) return rawDate; // Return raw date if invalid
+            return date.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+        }
+
+        // Update the DOB column with formatted dates
+        document.addEventListener('DOMContentLoaded', () => {
+            const dobCells = document.querySelectorAll('.dob');
+            dobCells.forEach(cell => {
+                const rawDate = cell.textContent.trim(); // Get raw date text
+                const formattedDate = formatDate(rawDate); // Format the date
+                cell.textContent = formattedDate; // Update cell content
+            });
+        });
+
         function fetchNotificationCount() {
             fetch('/admin/notification-count')
                 .then(response => response.json())
@@ -122,10 +155,43 @@
             document.getElementById('notifications-popup').classList.add('hidden');
         }
 
+        function searchEnrollment() {
+    const searchValue = document.getElementById('enrollment-search').value.trim();
+    const rows = document.querySelectorAll('#user-table tr');
+    let found = false;
+
+    // Loop through rows to find matches
+    rows.forEach((row) => {
+        const cells = row.getElementsByTagName('td'); // Get all <td> cells
+        if (cells.length > 0) {
+            const enrollmentText = cells[4]?.textContent.trim(); // Adjust index if needed
+
+            // Highlight the matching rows
+            if (enrollmentText === searchValue) {
+                row.style.backgroundColor = '#ffff99'; // Highlight color
+                found = true;
+            } else {
+                row.style.backgroundColor = ''; // Reset if no match
+            }
+        }
+    });
+
+    // Show message if no match found
+    const messageElement = document.getElementById('search-message');
+    if (!found && searchValue !== '') {
+        messageElement.textContent = `No student found with enrollment number: ${searchValue}`;
+        messageElement.style.display = 'block';
+    } else {
+        messageElement.style.display = 'none';
+    }
+}
+
+
         // Fetch notification count on page load
-        window.onload = function() {
+        window.onload = function () {
             fetchNotificationCount();
         };
     </script>
 </body>
+
 </html>

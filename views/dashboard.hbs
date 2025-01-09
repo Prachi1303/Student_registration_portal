@@ -13,7 +13,8 @@
             <li><a href="/dashboard"><i class='bx bx-user'></i>Profile</a></li>
             <li><a href="/update-profile"><i class='bx bx-edit'></i>Update Profile</a></li>
             {{#if (eq registrationStatus "Not Requested")}}
-            <button onclick="submitSemesterRegistration()">Register for Semester</button>
+            <button id="sem" onclick="submitSemesterRegistration()"><i class='bx bx-book'></i>Register for Semester</button>
+             
             {{else}}
             <p>Status: {{registrationStatus}}</p>
             {{/if}}
@@ -33,7 +34,7 @@
             <p><span>Year:</span> {{userDetails.year}}</p>
             <p><span>Enrollment:</span> {{userDetails.enrollment}}</p>
             <p><span>Mobile:</span> {{userDetails.mobile}}</p>
-            <p><span>Date of Birth:</span> {{userDetails.dob}}</p>
+            <p><span>Date of Birth: </span><label class="dob",style="color:#333"> {{userDetails.dob}}</label></p>
             <p><span>Address:</span> {{userDetails.address}}</p>
         </div>
 
@@ -46,7 +47,26 @@
 
 </body>
 <script>
+
+// Function to format the date (YYYY-MM-DD)
+function formatDate(rawDate) {
+    const date = new Date(rawDate);
+    if (isNaN(date.getTime())) return rawDate; // Return raw date if invalid
+    return date.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+}
+
+// Format the DOB in the span
+document.addEventListener('DOMContentLoaded', () => {
+    const dobElements = document.querySelectorAll('.dob');
+    dobElements.forEach(element => {
+        const rawText = element.textContent.replace('Date of Birth: ', '').trim(); // Extract raw date
+        const formattedDate = formatDate(rawText); // Format the date
+        element.textContent = `${formattedDate}`; // Update the content
+    });
+});
+
 function submitSemesterRegistration() {
+
     fetch('/semester-registration', {
         method: 'POST',
         headers: {
